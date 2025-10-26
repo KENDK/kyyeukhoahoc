@@ -167,10 +167,18 @@
             if (!flipbookEl) return;
 
             const containerWidth = flipbookEl.clientWidth;
-            const isMobile = containerWidth < 768;
+            
+            // --- Logic hiển thị trang linh hoạt ---
+            // Xác định xem nên hiển thị một hay hai trang dựa trên chiều rộng của vùng chứa.
+            // Trên màn hình hẹp (như điện thoại di động), chúng ta sẽ hiển thị một trang duy nhất.
+            // Trên màn hình rộng hơn, chúng ta sẽ hiển thị dạng hai trang.
+            // Ngưỡng xác định là 768 pixel CSS.
+            const showSinglePage = containerWidth < 768;
 
-            const bookWidth = isMobile ? containerWidth : containerWidth / 2;
-            const bookHeight = bookWidth * 1.414; // A4 aspect ratio
+            // Nếu hiển thị một trang, chiều rộng trang sách là toàn bộ chiều rộng vùng chứa.
+            // Nếu hiển thị hai trang, mỗi trang bằng một nửa chiều rộng vùng chứa.
+            const bookWidth = showSinglePage ? containerWidth : containerWidth / 2;
+            const bookHeight = bookWidth * 1.414; // Duy trì tỷ lệ khung hình A4
 
             flipbookEl.style.height = bookHeight + 'px';
 
