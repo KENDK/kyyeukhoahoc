@@ -200,7 +200,7 @@
                 <button id="nextBtn" aria-label="Next Page">&#9654;</button>
             </div>
             <div class="meta-controls">
-                <p id="page-counter"></p>
+                <p id="page-counter">Page 1 of 1</p>
                 <div class="jump-control">
                     <label for="page-jump-input">Go to:</label>
                     <input type="number" id="page-jump-input" min="1" />
@@ -223,27 +223,24 @@
         let pages = [];
         let isFlipping = false;
 
-        // Hàm debounce
-        function debounce(func, wait) {
-            let timeout;
-            return function executedFunction(...args) {
-                const later = () => {
-                    clearTimeout(timeout);
-                    func(...args);
-                };
-                clearTimeout(timeout);
-                timeout = setTimeout(later, wait);
-            };
-        }
-
         function updateControls() {
+            // Ensure we're getting the current page from turn.js
+            const currentPage = $(flipbookEl).turn('page') || 1;
+            
+            // Update page counter text
             pageCounter.textContent = `Page ${currentPage} of ${totalPages}`;
+            
+            // Update slider position
             pageSlider.value = currentPage;
+            
+            // Update jump input
             jumpInput.value = currentPage;
-        
+            
+            // Update button states
             prevBtn.disabled = currentPage === 1 || isFlipping;
             nextBtn.disabled = currentPage === totalPages || isFlipping;
-        
+            
+            // Update slider range
             pageSlider.max = totalPages;
             jumpInput.max = totalPages;
         }
@@ -261,25 +258,24 @@
                 margin: '0 auto'
             });
 
-            // Tạo các trang, load tất cả ảnh ngay từ đầu
-            pages = imagePaths.map((path) => {
+            // Create pages
+            imagePaths.forEach((path) => {
                 const div = document.createElement('div');
                 div.className = 'page';
                 const img = document.createElement('img');
-                img.src = path; // Load trực tiếp, bỏ lazy-load
+                img.src = path;
                 img.style.opacity = '0';
                 img.onload = () => {
                     img.style.opacity = '1';
-                    img.style.transition = 'opacity 0.3s';
                 };
                 img.onerror = () => {
-                    img.src = 'path/to/placeholder.png'; // Placeholder nếu lỗi
+                    console.error('Failed to load image:', path);
                 };
                 div.appendChild(img);
                 flipbookEl.appendChild(div);
-                return div;
             });
 
+            // Initialize turn.js
             $(flipbookEl).turn({
                 width: bookWidth,
                 height: bookHeight,
@@ -291,12 +287,12 @@
                 elevation: 50,
                 pages: totalPages,
                 when: {
-                    turning: function(e, page) {
+                    turning: function(event, page) {
                         isFlipping = true;
                         currentPage = page;
                         updateControls();
                     },
-                    turned: function(e, page) {
+                    turned: function(event, page) {
                         isFlipping = false;
                         currentPage = page;
                         updateControls();
@@ -304,46 +300,47 @@
                 }
             });
 
+            // Initial controls update
             updateControls();
         }
 
-        // Event listeners với debounce
-        prevBtn.addEventListener('click', debounce(() => {
+        // Event Listeners
+        prevBtn.addEventListener('click', () => {
             if (!prevBtn.disabled && !isFlipping) {
                 $(flipbookEl).turn('previous');
             }
-        }, 300));
+        });
 
-        nextBtn.addEventListener('click', debounce(() => {
+        nextBtn.addEventListener('click', () => {
             if (!nextBtn.disabled && !isFlipping) {
                 $(flipbookEl).turn('next');
             }
-        }, 300));
+        });
 
-        pageSlider.addEventListener('input', debounce((e) => {
+        pageSlider.addEventListener('input', (e) => {
             const newPage = parseInt(e.target.value, 10);
             if (newPage >= 1 && newPage <= totalPages && !isFlipping) {
                 $(flipbookEl).turn('page', newPage);
             }
-        }, 100));
+        });
 
-        jumpInput.addEventListener('keydown', (e) => {
-            if (e.key === 'Enter') {
-                const pageNum = parseInt(e.target.value, 10);
-                if (!isNaN(pageNum) && pageNum >= 1 && pageNum <= totalPages && !isFlipping) {
-                    $(flipbookEl).turn('page', pageNum);
-                } else {
-                    jumpInput.value = currentPage;
-                }
+        jumpInput.addEventListener('change', (e) => {
+            const pageNum = parseInt(e.target.value, 10);
+            if (!isNaN(pageNum) && pageNum >= 1 && pageNum <= totalPages && !isFlipping) {
+                $(flipbookEl).turn('page', pageNum);
+            } else {
+                jumpInput.value = currentPage;
             }
         });
 
+        // Handle resize
         let resizeTimeout;
         window.addEventListener('resize', () => {
             clearTimeout(resizeTimeout);
             resizeTimeout = setTimeout(setupFlipbook, 250);
         });
 
+        // Initialize on page load
         window.addEventListener('load', () => {
             totalPages = imagePaths.length;
             setupFlipbook();
