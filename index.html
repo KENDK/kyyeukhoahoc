@@ -237,4 +237,116 @@
 
         function updateControls() {
             pageCounter.textContent = `Page ${currentPage} of ${totalPages}`;
-            page
+            pageSlider.value = currentPage;
+            jumpInput.value = currentPage;
+
+            prevBtn.disabled = currentPage === 1 || isFlipping;
+            nextBtn.disabled = currentPage === totalPages || isFlipping;
+
+            pageSlider.max = totalPages;
+            jumpInput.max = totalPages;
+        }
+
+        function setupFlipbook() {
+            flipbookEl.innerHTML = '';
+
+            const containerWidth = Math.min(window.innerWidth - 20, 1000);
+            const bookWidth = containerWidth;
+            const bookHeight = bookWidth * 1.414;
+
+            $(flipbookEl).css({
+                width: bookWidth + 'px',
+                height: bookHeight + 'px',
+                margin: '0 auto'
+            });
+
+            // Tạo các trang, load tất cả ảnh ngay từ đầu
+            pages = imagePaths.map((path) => {
+                const div = document.createElement('div');
+                div.className = 'page';
+                const img = document.createElement('img');
+                img.src = path; // Load trực tiếp, bỏ lazy-load
+                img.style.opacity = '0';
+                img.onload = () => {
+                    img.style.opacity = '1';
+                    img.style.transition = 'opacity 0.3s';
+                };
+                img.onerror = () => {
+                    img.src = 'path/to/placeholder.png'; // Placeholder nếu lỗi
+                };
+                div.appendChild(img);
+                flipbookEl.appendChild(div);
+                return div;
+            });
+
+            $(flipbookEl).turn({
+                width: bookWidth,
+                height: bookHeight,
+                autoCenter: true,
+                display: 'single',
+                acceleration: window.innerWidth < 768,
+                gradients: window.innerWidth >= 768,
+                turnCorners: 'bl,br',
+                elevation: 50,
+                pages: totalPages,
+                when: {
+                    turning: function(e, page) {
+                        isFlipping = true;
+                        currentPage = page;
+                        updateControls();
+                    },
+                    turned: function(e, page) {
+                        isFlipping = false;
+                        currentPage = page;
+                        updateControls();
+                    }
+                }
+            });
+
+            updateControls();
+        }
+
+        // Event listeners với debounce
+        prevBtn.addEventListener('click', debounce(() => {
+            if (!prevBtn.disabled && !isFlipping) {
+                $(flipbookEl).turn('previous');
+            }
+        }, 300));
+
+        nextBtn.addEventListener('click', debounce(() => {
+            if (!nextBtn.disabled && !isFlipping) {
+                $(flipbookEl).turn('next');
+            }
+        }, 300));
+
+        pageSlider.addEventListener('input', debounce((e) => {
+            const newPage = parseInt(e.target.value, 10);
+            if (newPage >= 1 && newPage <= totalPages && !isFlipping) {
+                $(flipbookEl).turn('page', newPage);
+            }
+        }, 100));
+
+        jumpInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                const pageNum = parseInt(e.target.value, 10);
+                if (!isNaN(pageNum) && pageNum >= 1 && pageNum <= totalPages && !isFlipping) {
+                    $(flipbookEl).turn('page', pageNum);
+                } else {
+                    jumpInput.value = currentPage;
+                }
+            }
+        });
+
+        let resizeTimeout;
+        window.addEventListener('resize', () => {
+            clearTimeout(resizeTimeout);
+            resizeTimeout = setTimeout(setupFlipbook, 250);
+        });
+
+        window.addEventListener('load', () => {
+            totalPages = imagePaths.length;
+            setupFlipbook();
+        });
+    </script>
+</body>
+</html>
