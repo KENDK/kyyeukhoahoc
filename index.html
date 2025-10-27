@@ -184,7 +184,7 @@
         <div id="controls">
             <div class="nav-buttons">
                 <button id="prevBtn" aria-label="Previous Page">&#9664;</button>
-                <input type="range" id="page-slider" min="1" value="1" />
+                <input type="range" id="page-slider" min="1" value="1" step="1" />
                 <button id="nextBtn" aria-label="Next Page">&#9654;</button>
             </div>
             <div class="meta-controls">
@@ -206,15 +206,20 @@
         const pageSlider = document.getElementById('page-slider');
         const jumpInput = document.getElementById('page-jump-input');
 
-        function updateControls(currentPage, totalPages) {
+        let totalPages = imagePaths.length;
+        let currentPage = 1;
+        let pages = []; // Để lưu trữ các div page
+
+        function updateControls() {
             pageCounter.textContent = `Page ${currentPage} of ${totalPages}`;
-            pageSlider.max = totalPages;
             pageSlider.value = currentPage;
-            jumpInput.max = totalPages;
             jumpInput.value = currentPage;
 
             prevBtn.disabled = currentPage === 1;
             nextBtn.disabled = currentPage === totalPages;
+
+            pageSlider.max = totalPages;
+            jumpInput.max = totalPages;
         }
 
         function setupFlipbook() {
@@ -233,19 +238,19 @@
                 margin: '0 auto'
             });
 
-            // Lazy-load: Chỉ load ảnh khi cần
-            const pages = imagePaths.map((path, index) => {
+            // Tạo các trang với lazy-load
+            pages = imagePaths.map((path, index) => {
                 const div = document.createElement('div');
                 div.className = 'page';
                 const img = document.createElement('img');
-                img.dataset.src = path; // Lưu đường dẫn, chưa load
-                if (index < 3) img.src = path; // Preload 3 trang đầu
+                img.dataset.src = path; // Lưu đường dẫn
+                if (index < 3) { // Preload 3 trang đầu
+                    img.src = path;
+                }
                 div.appendChild(img);
+                flipbookEl.appendChild(div); // Thêm trực tiếp
                 return div;
             });
-
-            // Thêm các trang vào flipbook
-            flipbookEl.append(...pages);
 
             // Khởi tạo Turn.js
             $(flipbookEl).turn({
@@ -257,15 +262,18 @@
                 gradients: window.innerWidth >= 768, // Tắt gradients trên mobile
                 turnCorners: 'bl,br', // Bottom-left, bottom-right corners
                 elevation: 50,
-                pages: imagePaths.length,
+                pages: totalPages,
                 when: {
-                    turning: (e, page) => updateControls(page, imagePaths.length),
-                    turned: (e, page) => {
+                    turning: function(e, page) {
+                        currentPage = page;
+                        updateControls();
+                    },
+                    turned: function(e, page) {
                         // Lazy-load ảnh cho trang hiện tại và 2 trang gần kề
-                        const start = Math.max(0, page - 1);
-                        const end = Math.min(imagePaths.length, page + 2);
+                        const start = Math.max(0, page - 2); // Bắt đầu từ page -1, nhưng min 0
+                        const end = Math.min(totalPages, page + 1); // Đến page +1
                         for (let i = start; i < end; i++) {
-                            const img = pages[i].querySelector('img');
+                            const img = pages[i - 1].querySelector('img'); // i từ 1, index từ 0
                             if (img.dataset.src && !img.src) {
                                 img.src = img.dataset.src;
                             }
@@ -275,23 +283,39 @@
             });
 
             // Khởi tạo controls
-            updateControls(1, imagePaths.length);
-
-            // Event listeners
-            prevBtn.addEventListener('click', () => $(flipbookEl).turn('previous'));
-            nextBtn.addEventListener('click', () => $(flipbookEl).turn('next'));
-            pageSlider.addEventListener('input', (e) => {
-                $(flipbookEl).turn('page', parseInt(e.target.value, 10));
-            });
-            jumpInput.addEventListener('keydown', (e) => {
-                if (e.key === 'Enter') {
-                    const pageNum = parseInt(e.target.value, 10);
-                    if (!isNaN(pageNum) && pageNum >= 1 && pageNum <= imagePaths.length) {
-                        $(flipbookEl).turn('page', pageNum);
-                    }
-                }
-            });
+            updateControls();
         }
+
+        // Di chuyển event listeners ra ngoài để tránh duplicate trên resize
+        prevBtn.addEventListener('click', () => {
+            if (!prevBtn.disabled) {
+                $(flipbookEl).turn('previous');
+            }
+        });
+
+        nextBtn.addEventListener('click', () => {
+            if (!nextBtn.disabled) {
+                $(flipbookEl).turn('next');
+            }
+        });
+
+        pageSlider.addEventListener('input', (e) => {
+            const newPage = parseInt(e.target.value, 10);
+            if (newPage >= 1 && newPage <= totalPages) {
+                $(flipbookEl).turn('page', newPage);
+            }
+        });
+
+        jumpInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                const pageNum = parseInt(e.target.value, 10);
+                if (!isNaN(pageNum) && pageNum >= 1 && pageNum <= totalPages) {
+                    $(flipbookEl).turn('page', pageNum);
+                } else {
+                    jumpInput.value = currentPage; // Reset nếu sai
+                }
+            }
+        });
 
         // Debounce resize
         let resizeTimeout;
@@ -301,7 +325,10 @@
         });
 
         // Khởi tạo
-        window.addEventListener('load', setupFlipbook);
+        window.addEventListener('load', () => {
+            totalPages = imagePaths.length;
+            setupFlipbook();
+        });
     </script>
 </body>
 </html>
