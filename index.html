@@ -237,16 +237,16 @@
         }
 
         function updateControls() {
-            pageCounter.textContent = `Page ${currentPage} of ${totalPages}`;
-            pageSlider.value = currentPage;
-            jumpInput.value = currentPage;
+    pageCounter.textContent = `Page ${currentPage} of ${totalPages}`;
+    pageSlider.value = currentPage;
+    jumpInput.value = currentPage;
 
-            prevBtn.disabled = currentPage === 1 || isFlipping;
-            nextBtn.disabled = currentPage === totalPages || isFlipping;
+    prevBtn.disabled = currentPage === 1 || isFlipping;
+    nextBtn.disabled = currentPage === totalPages || isFlipping;
 
-            pageSlider.max = totalPages;
-            jumpInput.max = totalPages;
-        }
+    pageSlider.max = totalPages;
+    jumpInput.max = totalPages;
+}
 
         function setupFlipbook() {
             flipbookEl.innerHTML = '';
