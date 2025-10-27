@@ -208,13 +208,10 @@
 
             const containerWidth = flipbookEl.clientWidth;
             
-            // --- Logic hiển thị trang linh hoạt ---
-            // Thay vì dùng containerWidth, chúng ta sử dụng window.innerWidth để có kết quả
-            // chính xác và đáng tin cậy hơn trên các thiết bị di động.
-            const showSinglePage = window.innerWidth < 768;
+            
+            const bookWidth = containerWidth;
 
-            // Nếu hiển thị một trang, chiều rộng trang sách là toàn bộ chiều rộng vùng chứa.
-            // Nếu hiển thị hai trang, mỗi trang bằng một nửa chiều rộng vùng chứa.
+           
             const bookWidth = showSinglePage ? containerWidth : containerWidth / 2;
             const bookHeight = bookWidth * 1.414; // Duy trì tỷ lệ khung hình A4
 
