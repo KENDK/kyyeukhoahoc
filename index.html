@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Flipbook</title>
+    <title>Kỷ yếu hội thảo</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/turn.js/4.1.0/turn.min.js"></script>
     <style>
@@ -44,7 +44,6 @@
             box-shadow: 0 5px 10px -2px rgba(0, 0, 0, 0.1);
             touch-action: pan-y;
         }
-        
         #flipbook .page {
             background-color: white;
             overflow: hidden;
@@ -58,8 +57,6 @@
             opacity: 0;
             transition: opacity 0.3s;
         }
-
-        /* Style cho thanh điều hướng */
         #controls {
             position: fixed;
             bottom: 0;
@@ -74,15 +71,12 @@
             border-top: 1px solid rgba(75, 85, 99, 0.5);
             z-index: 1000;
         }
-
-        /* Style cho các nút điều hướng */
         .nav-buttons {
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 0.75rem;
         }
-
         .nav-button {
             background-color: rgba(75, 85, 99, 0.5);
             border: none;
@@ -96,17 +90,13 @@
             cursor: pointer;
             transition: all 0.2s ease;
         }
-
         .nav-button:hover {
             background-color: rgba(99, 102, 241, 0.8);
         }
-
         .nav-button:disabled {
             opacity: 0.5;
             cursor: not-allowed;
         }
-
-        /* Style cho hiển thị số trang */
         .page-display {
             display: flex;
             align-items: center;
@@ -117,7 +107,6 @@
             min-width: 120px;
             justify-content: center;
         }
-
         #current-page {
             width: 40px;
             background: transparent;
@@ -127,22 +116,17 @@
             text-align: right;
             padding: 0;
         }
-
         .separator {
             color: rgba(156, 163, 175, 0.8);
         }
-
         #total-pages {
             color: rgba(156, 163, 175, 0.8);
             min-width: 20px;
         }
-
-        /* Style cho thanh trượt */
         .slider-container {
             position: relative;
             padding: 0 1rem;
         }
-
         #page-slider {
             width: 100%;
             height: 6px;
@@ -151,7 +135,6 @@
             border-radius: 3px;
             outline: none;
         }
-
         #page-slider::-webkit-slider-thumb {
             -webkit-appearance: none;
             width: 16px;
@@ -161,12 +144,9 @@
             cursor: pointer;
             transition: all 0.2s ease;
         }
-
         #page-slider::-webkit-slider-thumb:hover {
             transform: scale(1.2);
         }
-
-        /* Style cho preview thumbnail */
         .slider-preview {
             position: absolute;
             bottom: 100%;
@@ -177,23 +157,18 @@
             transform: translateX(-50%);
             pointer-events: none;
         }
-
-        /* Mobile responsive */
         @media (max-width: 640px) {
             #controls {
                 padding: 0.75rem;
             }
-
             .nav-button {
                 width: 36px;
                 height: 36px;
             }
-
             .page-display {
                 padding: 0.25rem 0.5rem;
                 min-width: 90px;
             }
-
             #current-page {
                 width: 30px;
                 font-size: 0.875rem;
@@ -207,7 +182,6 @@
             <div id="flipbook"></div>
         </div>
         <div id="controls">
-            <!-- Thanh điều hướng chính -->
             <div class="nav-buttons">
                 <button id="firstBtn" aria-label="First Page" class="nav-button">
                     <span>&#171;</span>
@@ -215,14 +189,11 @@
                 <button id="prevBtn" aria-label="Previous Page" class="nav-button">
                     <span>&#8249;</span>
                 </button>
-                
-                <!-- Hiển thị trang dạng "5 / 20" -->
                 <div class="page-display">
                     <input type="number" id="current-page" min="1" aria-label="Current Page"/>
                     <span class="separator">/</span>
                     <span id="total-pages">0</span>
                 </div>
-
                 <button id="nextBtn" aria-label="Next Page" class="nav-button">
                     <span>&#8250;</span>
                 </button>
@@ -230,59 +201,52 @@
                     <span>&#187;</span>
                 </button>
             </div>
-
-            <!-- Thanh trượt với hiển thị preview thumbnail -->
             <div class="slider-container">
                 <input type="range" id="page-slider" min="1" value="1" step="1" />
                 <div id="slider-preview" class="slider-preview"></div>
             </div>
         </div>
     </div>
-    
     <script>
         const imagePaths = ["pages/page_bia.png","pages/page_bialot.png","pages/page_1m.png","pages/page_2m.png","pages/page_3m.png","pages/page_4m.png","pages/page_5m.png","pages/page_6m.png","pages/page_7m.png","pages/page_8m.png","pages/page_9m.png","pages/page_10m.png","pages/page_11m.png","pages/page_1.png","pages/page_2.png","pages/page_3.png","pages/page_4.png","pages/page_5.png","pages/page_6.png","pages/page_7.png","pages/page_8.png","pages/page_9.png","pages/page_10.png","pages/page_11.png","pages/page_12.png","pages/page_13.png","pages/page_14.png","pages/page_15.png","pages/page_16.png","pages/page_17.png","pages/page_18.png","pages/page_19.png","pages/page_20.png","pages/page_21.png","pages/page_22.png","pages/page_23.png","pages/page_24.png","pages/page_25.png","pages/page_26.png","pages/page_27.png","pages/page_28.png","pages/page_29.png","pages/page_30.png","pages/page_31.png","pages/page_32.png","pages/page_33.png","pages/page_34.png","pages/page_35.png","pages/page_36.png","pages/page_37.png","pages/page_38.png","pages/page_39.png","pages/page_40.png","pages/page_41.png","pages/page_42.png","pages/page_43.png","pages/page_44.png","pages/page_45.png","pages/page_46.png","pages/page_47.png","pages/page_48.png","pages/page_49.png","pages/page_50.png","pages/page_51.png","pages/page_52.png","pages/page_53.png","pages/page_54.png","pages/page_55.png","pages/page_56.png","pages/page_57.png","pages/page_58.png","pages/page_59.png","pages/page_60.png","pages/page_61.png","pages/page_62.png","pages/page_63.png","pages/page_64.png","pages/page_65.png","pages/page_66.png","pages/page_67.png","pages/page_68.png","pages/page_69.png","pages/page_70.png","pages/page_71.png","pages/page_72.png","pages/page_73.png","pages/page_74.png","pages/page_75.png","pages/page_76.png","pages/page_77.png","pages/page_78.png","pages/page_79.png","pages/page_80.png","pages/page_81.png","pages/page_82.png","pages/page_83.png","pages/page_84.png","pages/page_85.png","pages/page_86.png","pages/page_87.png","pages/page_88.png","pages/page_89.png","pages/page_90.png","pages/page_91.png","pages/page_92.png","pages/page_93.png","pages/page_94.png","pages/page_95.png","pages/page_96.png","pages/page_97.png","pages/page_98.png","pages/page_99.png","pages/page_100.png","pages/page_101.png","pages/page_102.png","pages/page_103.png","pages/page_104.png","pages/page_105.png","pages/page_106.png","pages/page_107.png","pages/page_108.png","pages/page_109.png","pages/page_110.png","pages/page_111.png","pages/page_112.png","pages/page_113.png","pages/page_114.png","pages/page_115.png","pages/page_116.png","pages/page_117.png","pages/page_118.png","pages/page_119.png","pages/page_120.png","pages/page_121.png","pages/page_122.png","pages/page_123.png","pages/page_124.png","pages/page_125.png","pages/page_126.png","pages/page_127.png","pages/page_128.png","pages/page_129.png","pages/page_130.png","pages/page_131.png","pages/page_132.png","pages/page_133.png","pages/page_134.png","pages/page_135.png","pages/page_136.png","pages/page_137.png","pages/page_138.png","pages/page_139.png","pages/page_140.png","pages/page_141.png","pages/page_142.png","pages/page_143.png","pages/page_144.png","pages/page_145.png","pages/page_146.png","pages/page_147.png","pages/page_148.png","pages/page_149.png","pages/page_150.png","pages/page_151.png","pages/page_152.png","pages/page_153.png","pages/page_154.png","pages/page_155.png","pages/page_156.png","pages/page_157.png","pages/page_158.png","pages/page_159.png","pages/page_160.png","pages/page_161.png","pages/page_162.png","pages/page_163.png","pages/page_164.png","pages/page_165.png","pages/page_166.png","pages/page_167.png","pages/page_168.png","pages/page_169.png","pages/page_170.png","pages/page_171.png","pages/page_172.png","pages/page_173.png","pages/page_174.png","pages/page_175.png","pages/page_176.png","pages/page_177.png","pages/page_178.png","pages/page_179.png","pages/page_180.png","pages/page_181.png","pages/page_182.png","pages/page_183.png","pages/page_184.png","pages/page_185.png","pages/page_186.png","pages/page_187.png","pages/page_188.png","pages/page_189.png","pages/page_190.png","pages/page_191.png","pages/page_192.png","pages/page_193.png","pages/page_194.png","pages/page_195.png","pages/page_196.png","pages/page_197.png","pages/page_198.png","pages/page_199.png","pages/page_200.png","pages/page_201.png","pages/page_202.png","pages/page_203.png","pages/page_204.png","pages/page_205.png","pages/page_206.png","pages/page_207.png","pages/page_208.png","pages/page_209.png","pages/page_210.png","pages/page_211.png","pages/page_212.png","pages/page_213.png","pages/page_214.png","pages/page_215.png","pages/page_216.png","pages/page_217.png","pages/page_218.png","pages/page_219.png","pages/page_220.png","pages/page_221.png","pages/page_222.png","pages/page_223.png","pages/page_224.png","pages/page_225.png","pages/page_226.png","pages/page_227.png","pages/page_228.png","pages/page_229.png","pages/page_230.png","pages/page_231.png","pages/page_232.png","pages/page_233.png","pages/page_234.png","pages/page_235.png","pages/page_236.png","pages/page_237.png","pages/page_238.png","pages/page_239.png","pages/page_240.png","pages/page_241.png","pages/page_242.png","pages/page_243.png","pages/page_244.png","pages/page_245.png","pages/page_246.png","pages/page_247.png","pages/page_248.png","pages/page_249.png","pages/page_250.png","pages/page_251.png","pages/page_252.png","pages/page_253.png","pages/page_254.png","pages/page_255.png","pages/page_256.png","pages/page_257.png","pages/page_258.png","pages/page_259.png","pages/page_260.png","pages/page_261.png","pages/page_262.png","pages/page_263.png","pages/page_264.png","pages/page_265.png","pages/page_266.png","pages/page_267.png","pages/page_268.png","pages/page_269.png","pages/page_270.png","pages/page_271.png","pages/page_272.png","pages/page_273.png","pages/page_274.png","pages/page_275.png","pages/page_276.png","pages/page_277.png","pages/page_278.png","pages/page_279.png","pages/page_280.png","pages/page_281.png","pages/page_282.png","pages/page_283.png","pages/page_284.png","pages/page_285.png","pages/page_286.png","pages/page_287.png","pages/page_288.png","pages/page_289.png","pages/page_290.png","pages/page_291.png","pages/page_292.png","pages/page_293.png","pages/page_294.png","pages/page_295.png","pages/page_296.png","pages/page_297.png","pages/page_298.png","pages/page_299.png","pages/page_300.png","pages/page_301.png","pages/page_302.png","pages/page_303.png","pages/page_304.png","pages/page_305.png","pages/page_306.png","pages/page_307.png","pages/page_308.png","pages/page_309.png","pages/page_310.png","pages/page_311.png","pages/page_312.png","pages/page_313.png","pages/page_314.png","pages/page_315.png","pages/page_316.png","pages/page_317.png","pages/page_318.png","pages/page_319.png","pages/page_320.png","pages/page_321.png","pages/page_322.png","pages/page_323.png","pages/page_324.png","pages/page_325.png","pages/page_326.png","pages/page_327.png","pages/page_328.png","pages/page_329.png","pages/page_330.png","pages/page_331.png","pages/page_332.png","pages/page_333.png","pages/page_334.png","pages/page_335.png","pages/page_336.png","pages/page_337.png","pages/page_338.png","pages/page_339.png","pages/page_340.png","pages/page_341.png","pages/page_342.png","pages/page_343.png","pages/page_344.png","pages/page_345.png","pages/page_346.png","pages/page_347.png","pages/page_348.png","pages/page_349.png","pages/page_350.png","pages/page_351.png","pages/page_352.png","pages/page_353.png","pages/page_354.png","pages/page_355.png","pages/page_356.png","pages/page_357.png","pages/page_358.png","pages/page_359.png","pages/page_360.png","pages/page_361.png","pages/page_362.png","pages/page_363.png","pages/page_364.png","pages/page_365.png","pages/page_366.png","pages/page_367.png","pages/page_368.png","pages/page_369.png","pages/page_370.png","pages/page_371.png","pages/page_372.png","pages/page_373.png","pages/page_374.png","pages/page_375.png","pages/page_376.png","pages/page_377.png","pages/page_378.png","pages/page_379.png","pages/page_380.png","pages/page_381.png","pages/page_382.png","pages/page_383.png","pages/page_384.png","pages/page_385.png","pages/page_386.png","pages/page_387.png","pages/page_388.png","pages/page_389.png","pages/page_390.png","pages/page_391.png","pages/page_392.png","pages/page_393.png","pages/page_394.png","pages/page_395.png","pages/page_396.png","pages/page_397.png","pages/page_398.png","pages/page_399.png","pages/page_400.png","pages/page_401.png","pages/page_402.png","pages/page_403.png","pages/page_404.png","pages/page_405.png","pages/page_406.png","pages/page_407.png","pages/page_408.png","pages/page_409.png"];
         const flipbookEl = document.getElementById('flipbook');
         const prevBtn = document.getElementById('prevBtn');
         const nextBtn = document.getElementById('nextBtn');
         const pageSlider = document.getElementById('page-slider');
+        const firstBtn = document.getElementById('firstBtn');
+        const lastBtn = document.getElementById('lastBtn');
+        const currentPageInput = document.getElementById('current-page');
+        const totalPagesSpan = document.getElementById('total-pages');
+        const sliderPreview = document.getElementById('slider-preview');
 
         let totalPages = imagePaths.length;
-        let currentPage = 1;
-        let pages = [];
         let isFlipping = false;
 
         function updateControls() {
-            const currentPage = $(flipbookEl).turn('page') || 1;
-            
-            // Cập nhật hiển thị số trang
-            document.getElementById('current-page').value = currentPage;
-            document.getElementById('total-pages').textContent = totalPages;
-            
-            // Cập nhật trạng thái các nút
-            document.getElementById('firstBtn').disabled = currentPage === 1 || isFlipping;
-            prevBtn.disabled = currentPage === 1 || isFlipping;
-            nextBtn.disabled = currentPage === totalPages || isFlipping;
-            document.getElementById('lastBtn').disabled = currentPage === totalPages || isFlipping;
-            
-            // Cập nhật vị trí thanh trượt
-            pageSlider.value = currentPage;
+            // Luôn lấy trang hiện tại từ turn.js
+            let page = $(flipbookEl).turn('page') || 1;
+            currentPageInput.value = page;
+            totalPagesSpan.textContent = totalPages;
+
+            firstBtn.disabled = page === 1 || isFlipping;
+            prevBtn.disabled = page === 1 || isFlipping;
+            nextBtn.disabled = page === totalPages || isFlipping;
+            lastBtn.disabled = page === totalPages || isFlipping;
+
+            pageSlider.value = page;
             pageSlider.max = totalPages;
         }
 
         function setupFlipbook() {
             flipbookEl.innerHTML = '';
-
             const containerWidth = Math.min(window.innerWidth - 20, 1000);
             const bookWidth = containerWidth;
             const bookHeight = bookWidth * 1.414;
-
             $(flipbookEl).css({
                 width: bookWidth + 'px',
                 height: bookHeight + 'px',
                 margin: '0 auto'
             });
-
-            // Tạo các trang
             imagePaths.forEach((path) => {
                 const div = document.createElement('div');
                 div.className = 'page';
@@ -293,13 +257,12 @@
                     img.style.opacity = '1';
                 };
                 img.onerror = () => {
-                    console.error('Failed to load image:', path);
+                    img.style.opacity = '1';
+                    img.src = 'https://via.placeholder.com/400x600?text=Not+found';
                 };
                 div.appendChild(img);
                 flipbookEl.appendChild(div);
             });
-
-            // Khởi tạo turn.js
             $(flipbookEl).turn({
                 width: bookWidth,
                 height: bookHeight,
@@ -311,97 +274,73 @@
                 elevation: 50,
                 pages: totalPages,
                 when: {
-                    turning: function(event, page) {
+                    turning: function(e, page) {
                         isFlipping = true;
-                        currentPage = page;
                         updateControls();
                     },
-                    turned: function(event, page) {
+                    turned: function(e, page) {
                         isFlipping = false;
-                        currentPage = page;
                         updateControls();
                     }
                 }
             });
-
-            // Cập nhật điều khiển ban đầu
             updateControls();
         }
 
-        // Event Listeners cho các nút điều hướng
-        document.getElementById('firstBtn').addEventListener('click', () => {
-            if (!isFlipping) {
-                $(flipbookEl).turn('page', 1);
-            }
+        // Nút điều hướng
+        firstBtn.addEventListener('click', () => {
+            if (!isFlipping) $(flipbookEl).turn('page', 1);
         });
-
         prevBtn.addEventListener('click', () => {
-            if (!prevBtn.disabled && !isFlipping) {
-                $(flipbookEl).turn('previous');
-            }
+            if (!isFlipping) $(flipbookEl).turn('previous');
         });
-
         nextBtn.addEventListener('click', () => {
-            if (!nextBtn.disabled && !isFlipping) {
-                $(flipbookEl).turn('next');
-            }
+            if (!isFlipping) $(flipbookEl).turn('next');
+        });
+        lastBtn.addEventListener('click', () => {
+            if (!isFlipping) $(flipbookEl).turn('page', totalPages);
         });
 
-        document.getElementById('lastBtn').addEventListener('click', () => {
-            if (!isFlipping) {
-                $(flipbookEl).turn('page', totalPages);
-            }
-        });
-
-        // Xử lý nhập số trang trực tiếp
-        document.getElementById('current-page').addEventListener('change', (e) => {
-            const pageNum = parseInt(e.target.value, 10);
-            if (!isNaN(pageNum) && pageNum >= 1 && pageNum <= totalPages && !isFlipping) {
-                $(flipbookEl).turn('page', pageNum);
+        // Nhập số trang trực tiếp
+        currentPageInput.addEventListener('change', (e) => {
+            let val = parseInt(e.target.value, 10);
+            if (!isNaN(val) && val >= 1 && val <= totalPages && !isFlipping) {
+                $(flipbookEl).turn('page', val);
             } else {
-                e.target.value = currentPage;
+                // Reset lại nếu nhập sai
+                currentPageInput.value = $(flipbookEl).turn('page') || 1;
             }
         });
 
-        // Xử lý thanh trượt
+        // Thanh trượt
         pageSlider.addEventListener('input', (e) => {
-            const newPage = parseInt(e.target.value, 10);
-            if (newPage >= 1 && newPage <= totalPages && !isFlipping) {
-                $(flipbookEl).turn('page', newPage);
+            let val = parseInt(e.target.value, 10);
+            if (val >= 1 && val <= totalPages && !isFlipping) {
+                $(flipbookEl).turn('page', val);
             }
         });
 
-        // Xử lý preview thumbnail
-        let previewTimeout;
+        // Preview trên thanh trượt
         pageSlider.addEventListener('mousemove', (e) => {
-            clearTimeout(previewTimeout);
-            const preview = document.getElementById('slider-preview');
-            
-            // Tính toán vị trí preview
             const rect = pageSlider.getBoundingClientRect();
             const percent = (e.clientX - rect.left) / rect.width;
-            const pageNum = Math.round(percent * totalPages);
-            
-            // Hiển thị preview
-            preview.style.display = 'block';
-            preview.style.left = `${e.clientX}px`;
-            preview.textContent = `Page ${pageNum}`;
+            let pageNum = Math.round(percent * (totalPages - 1)) + 1;
+            pageNum = Math.min(Math.max(pageNum, 1), totalPages);
+            sliderPreview.textContent = `Trang ${pageNum}`;
+            sliderPreview.style.display = 'block';
+            sliderPreview.style.left = (e.clientX - rect.left) + "px";
         });
-
         pageSlider.addEventListener('mouseout', () => {
-            previewTimeout = setTimeout(() => {
-                document.getElementById('slider-preview').style.display = 'none';
-            }, 300);
+            sliderPreview.style.display = 'none';
         });
 
-        // Xử lý thay đổi kích thước màn hình
+        // Resize
         let resizeTimeout;
         window.addEventListener('resize', () => {
             clearTimeout(resizeTimeout);
             resizeTimeout = setTimeout(setupFlipbook, 250);
         });
 
-        // Khởi tạo khi trang load xong
         window.addEventListener('load', () => {
             totalPages = imagePaths.length;
             setupFlipbook();
