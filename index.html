@@ -23,25 +23,26 @@
             justify-content: center;
             min-height: 100vh;
             overflow: auto;
-            padding: 0.5rem; /* Giảm padding cho mobile */
+            padding: 0.5rem;
             box-sizing: border-box;
+            padding-bottom: 100px; /* Khoảng trống cho thanh điều hướng cố định */
         }
         #app-container {
             width: 100%;
-            max-width: 1000px; /* Giảm max-width để fit mobile */
+            max-width: 1000px;
             display: flex;
             flex-direction: column;
             gap: 1rem;
         }
         #book-wrapper {
             background-color: var(--book-background);
-            padding: 0.5rem; /* Giảm padding */
+            padding: 0.5rem;
             border-radius: 0.5rem;
             box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.2);
         }
         #flipbook {
-            box-shadow: 0 5px 10px -2px rgba(0, 0, 0, 0.1); /* Giảm shadow cho mobile */
-            touch-action: pinch-zoom; /* Hỗ trợ zoom trên mobile */
+            box-shadow: 0 5px 10px -2px rgba(0, 0, 0, 0.1);
+            touch-action: pinch-zoom;
         }
         #flipbook .page {
             background-color: white;
@@ -50,45 +51,52 @@
         #flipbook .page img {
             width: 100%;
             height: 100%;
-            object-fit: contain; /* Đảm bảo ảnh fit */
-            user-select: none; /* Ngăn chọn ảnh */
-            pointer-events: none; /* Ngăn tương tác trực tiếp với ảnh */
+            object-fit: contain;
+            user-select: none;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.3s;
         }
         #controls {
-            background-color: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(4px);
+            position: fixed; /* Cố định dưới màn hình */
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background-color: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(8px);
             padding: 0.5rem;
-            border-radius: 0.5rem;
+            border-top: 1px solid #4b5563;
             display: flex;
             flex-direction: column;
             align-items: center;
             gap: 0.5rem;
+            z-index: 1000; /* Đảm bảo nằm trên flipbook */
             width: 100%;
-            max-width: 500px; /* Giảm max-width cho mobile */
-            margin: 0 auto;
+            box-sizing: border-box;
         }
         .nav-buttons {
             display: flex;
             align-items: center;
-            justify-content: space-between;
+            justify-content: center; /* Căn giữa nút */
             width: 100%;
+            max-width: 500px;
             gap: 0.5rem;
         }
         #controls button {
-            padding: 0.5rem;
+            padding: 0;
             background-color: #374151;
             color: white;
             border: none;
             border-radius: 9999px;
             cursor: pointer;
             font-weight: 600;
-            transition: background-color 0.2s;
-            font-size: 1rem; /* Tăng font-size cho dễ bấm */
-            width: 40px; /* Kích thước cố định cho nút */
-            height: 40px;
+            font-size: 1rem;
+            width: 44px; /* Tăng kích thước */
+            height: 44px;
             display: flex;
             align-items: center;
             justify-content: center;
+            transition: background-color 0.2s;
         }
         #controls button:hover {
             background-color: var(--accent-color);
@@ -99,18 +107,18 @@
         }
         #page-slider {
             flex-grow: 1;
-            margin: 0 0.5rem;
+            margin: 0 1rem;
             width: auto;
             cursor: pointer;
-            height: 8px; /* Tăng độ dày slider */
+            height: 10px; /* Dày hơn cho dễ chạm */
             -webkit-appearance: none;
             background: #4b5563;
             border-radius: 5px;
         }
         #page-slider::-webkit-slider-thumb {
             -webkit-appearance: none;
-            width: 16px;
-            height: 16px;
+            width: 20px;
+            height: 20px;
             background: var(--accent-color);
             border-radius: 50%;
             cursor: pointer;
@@ -119,13 +127,13 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 0.75rem;
+            gap: 1rem;
             color: var(--text-color);
             font-size: 0.875rem;
         }
         #page-jump-input {
-            width: 50px;
-            padding: 0.25rem;
+            width: 60px;
+            padding: 0.3rem;
             border: 1px solid #4b5563;
             background-color: #374151;
             color: white;
@@ -134,7 +142,7 @@
             font-size: 0.875rem;
         }
         #page-counter {
-            min-width: 80px;
+            min-width: 100px;
             text-align: center;
         }
 
@@ -142,6 +150,7 @@
         @media (max-width: 767px) {
             body {
                 padding: 0.25rem;
+                padding-bottom: 90px; /* Khoảng trống nhỏ hơn */
             }
             #app-container {
                 gap: 0.5rem;
@@ -150,28 +159,31 @@
                 padding: 0.25rem;
             }
             #controls {
-                padding: 0.25rem;
-                max-width: 100%;
+                padding: 0.3rem;
             }
             #controls button {
-                width: 36px;
-                height: 36px;
+                width: 40px;
+                height: 40px;
                 font-size: 0.875rem;
             }
             #page-slider {
-                margin: 0 0.25rem;
+                margin: 0 0.5rem;
+                height: 8px;
+            }
+            #page-slider::-webkit-slider-thumb {
+                width: 16px;
+                height: 16px;
             }
             .meta-controls {
                 gap: 0.5rem;
                 font-size: 0.75rem;
-                flex-wrap: wrap;
             }
             #page-jump-input {
-                width: 44px;
+                width: 50px;
                 font-size: 0.75rem;
             }
             #page-counter {
-                min-width: 0;
+                min-width: 80px;
             }
         }
     </style>
@@ -208,123 +220,160 @@
 
         let totalPages = imagePaths.length;
         let currentPage = 1;
-        let pages = []; // Để lưu trữ các div page
+        let pages = [];
+        let isFlipping = false; // Trạng thái lật trang
+
+        // Hàm debounce
+        function debounce(func, wait) {
+            let timeout;
+            return function executedFunction(...args) {
+                const later = () => {
+                    clearTimeout(timeout);
+                    func(...args);
+                };
+                clearTimeout(timeout);
+                timeout = setTimeout(later, wait);
+            };
+        }
 
         function updateControls() {
             pageCounter.textContent = `Page ${currentPage} of ${totalPages}`;
             pageSlider.value = currentPage;
             jumpInput.value = currentPage;
 
-            prevBtn.disabled = currentPage === 1;
-            nextBtn.disabled = currentPage === totalPages;
+            prevBtn.disabled = currentPage === 1 || isFlipping;
+            nextBtn.disabled = currentPage === totalPages || isFlipping;
 
             pageSlider.max = totalPages;
             jumpInput.max = totalPages;
         }
 
         function setupFlipbook() {
-            // Xóa nội dung cũ
             flipbookEl.innerHTML = '';
 
-            // Tính kích thước responsive
-            const containerWidth = Math.min(window.innerWidth - 20, 1000); // Giới hạn width
-            const bookWidth = containerWidth; // Single page
-            const bookHeight = bookWidth * 1.414; // Tỷ lệ A4
+            const containerWidth = Math.min(window.innerWidth - 20, 1000);
+            const bookWidth = containerWidth;
+            const bookHeight = bookWidth * 1.414;
 
-            // Đặt kích thước flipbook
             $(flipbookEl).css({
                 width: bookWidth + 'px',
                 height: bookHeight + 'px',
                 margin: '0 auto'
             });
 
-            // Tạo các trang với lazy-load
             pages = imagePaths.map((path, index) => {
                 const div = document.createElement('div');
                 div.className = 'page';
                 const img = document.createElement('img');
-                img.dataset.src = path; // Lưu đường dẫn
-                if (index < 3) { // Preload 3 trang đầu
+                img.dataset.src = path;
+                if (index === 0) {
                     img.src = path;
                 }
+                img.style.opacity = '0';
+                img.onload = () => {
+                    img.style.opacity = '1';
+                    img.style.transition = 'opacity 0.3s';
+                };
+                img.onerror = () => {
+                    img.src = 'path/to/placeholder.png';
+                };
                 div.appendChild(img);
-                flipbookEl.appendChild(div); // Thêm trực tiếp
+                flipbookEl.appendChild(div);
                 return div;
             });
 
-            // Khởi tạo Turn.js
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const img = entry.target.querySelector('img');
+                        if (img.dataset.src && !img.src) {
+                            img.src = img.dataset.src;
+                        }
+                    }
+                });
+            }, {
+                root: flipbookEl,
+                threshold: 0.1
+            });
+
+            pages.forEach(page => observer.observe(page));
+
             $(flipbookEl).turn({
                 width: bookWidth,
                 height: bookHeight,
                 autoCenter: true,
-                display: 'single', // Luôn hiển thị 1 trang
-                acceleration: window.innerWidth < 768, // Tăng tốc animation trên mobile
-                gradients: window.innerWidth >= 768, // Tắt gradients trên mobile
-                turnCorners: 'bl,br', // Bottom-left, bottom-right corners
+                display: 'single',
+                acceleration: window.innerWidth < 768,
+                gradients: window.innerWidth >= 768,
+                turnCorners: 'bl,br',
                 elevation: 50,
                 pages: totalPages,
                 when: {
                     turning: function(e, page) {
+                        isFlipping = true;
                         currentPage = page;
                         updateControls();
                     },
                     turned: function(e, page) {
-                        // Lazy-load ảnh cho trang hiện tại và 2 trang gần kề
-                        const start = Math.max(0, page - 2); // Bắt đầu từ page -1, nhưng min 0
-                        const end = Math.min(totalPages, page + 1); // Đến page +1
-                        for (let i = start; i < end; i++) {
-                            const img = pages[i - 1].querySelector('img'); // i từ 1, index từ 0
-                            if (img.dataset.src && !img.src) {
+                        isFlipping = false;
+                        currentPage = page;
+                        updateControls();
+                        const start = Math.max(0, page - 2);
+                        const end = Math.min(totalPages, page + 1);
+                        pages.forEach((p, index) => {
+                            const img = p.querySelector('img');
+                            const pageIndex = index + 1;
+                            if (pageIndex >= start && pageIndex <= end && img.dataset.src && !img.src) {
                                 img.src = img.dataset.src;
+                            } else if (Math.abs(pageIndex - page) > 3 && img.src) {
+                                img.src = '';
+                                img.style.opacity = '0';
                             }
-                        }
+                        });
                     }
                 }
             });
 
-            // Khởi tạo controls
             updateControls();
         }
 
-        // Di chuyển event listeners ra ngoài để tránh duplicate trên resize
-        prevBtn.addEventListener('click', () => {
-            if (!prevBtn.disabled) {
+        // Event listeners với debounce
+        prevBtn.addEventListener('click', debounce(() => {
+            if (!prevBtn.disabled && !isFlipping) {
                 $(flipbookEl).turn('previous');
             }
-        });
+        }, 300));
 
-        nextBtn.addEventListener('click', () => {
-            if (!nextBtn.disabled) {
+        nextBtn.addEventListener('click', debounce(() => {
+            if (!nextBtn.disabled && !isFlipping) {
                 $(flipbookEl).turn('next');
             }
-        });
+        }, 300));
 
-        pageSlider.addEventListener('input', (e) => {
+        pageSlider.addEventListener('input', debounce((e) => {
             const newPage = parseInt(e.target.value, 10);
-            if (newPage >= 1 && newPage <= totalPages) {
+            if (newPage >= 1 && newPage <= totalPages && !isFlipping) {
                 $(flipbookEl).turn('page', newPage);
             }
-        });
+        }, 100));
 
         jumpInput.addEventListener('keydown', (e) => {
             if (e.key === 'Enter') {
                 const pageNum = parseInt(e.target.value, 10);
-                if (!isNaN(pageNum) && pageNum >= 1 && pageNum <= totalPages) {
+                if (!isNaN(pageNum) && pageNum >= 1 && pageNum <= totalPages && !isFlipping) {
                     $(flipbookEl).turn('page', pageNum);
                 } else {
-                    jumpInput.value = currentPage; // Reset nếu sai
+                    jumpInput.value = currentPage;
                 }
             }
         });
 
-        // Debounce resize
         let resizeTimeout;
         window.addEventListener('resize', () => {
             clearTimeout(resizeTimeout);
             resizeTimeout = setTimeout(setupFlipbook, 250);
         });
 
-        // Khởi tạo
         window.addEventListener('load', () => {
             totalPages = imagePaths.length;
             setupFlipbook();
